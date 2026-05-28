@@ -1,0 +1,8 @@
+# .github/metadata.yaml
+description: "Linked-list types for Swift."
+topics:
+  - primitives
+  - list
+homepage: "https://swift-institute.org"
+readme:
+  family: E
