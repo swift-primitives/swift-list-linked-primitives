@@ -26,12 +26,12 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(path: "../swift-list-primitives"),
-        .package(path: "../swift-buffer-primitives"),
-        .package(path: "../swift-buffer-linked-primitives"),
-        .package(path: "../swift-index-primitives"),
-        .package(path: "../swift-property-primitives"),
-        .package(path: "../swift-iterator-primitives"),
+        .package(url: "https://github.com/swift-primitives/swift-list-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-buffer-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-buffer-linked-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-index-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-property-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-iterator-primitives.git", branch: "main"),
     ],
     targets: [
 
