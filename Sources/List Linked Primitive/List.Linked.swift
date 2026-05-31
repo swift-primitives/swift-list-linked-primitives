@@ -14,7 +14,7 @@ public import Index_Primitives
 public import Buffer_Linked_Primitive
 public import Buffer_Linked_Small_Primitive
 public import Buffer_Linked_Inline_Primitives
-public import Buffer_Linked_Primitives
+internal import Buffer_Linked_Primitives
 
 extension List where Element: ~Copyable {
 

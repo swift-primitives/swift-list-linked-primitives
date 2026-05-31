@@ -11,11 +11,7 @@
 
 public import List_Linked_Primitive
 public import List_Primitives_Core
-public import Index_Primitives
-public import Buffer_Linked_Primitive
-public import Buffer_Linked_Primitives
-public import Iterator_Primitive
-public import Iterator_Protocol
+internal import Buffer_Linked_Primitive
 
 // MARK: - CoW-Safe Mutations (Copyable elements only)
 
@@ -113,30 +109,10 @@ extension List.Linked where Element: Copyable {
     }
 }
 
-// MARK: - Sequence (Copyable elements only)
-
-extension List.Linked: Swift.Sequence where Element: Copyable {
-    /// An iterator over the elements of a linked list.
-    public struct Iterator: Iterator_Primitive.Iterator.`Protocol`, IteratorProtocol {
-        @usableFromInline
-        package var _inner: Buffer<Element>.Linked<N>.Iterator
-
-        @usableFromInline
-        package init(inner: Buffer<Element>.Linked<N>.Iterator) {
-            self._inner = inner
-        }
-
-        @inlinable
-        public mutating func next() -> Element? {
-            _inner.next()
-        }
-    }
-
-    @inlinable
-    public func makeIterator() -> Iterator {
-        Iterator(inner: _buffer.makeIterator())
-    }
-}
+// Note: iteration is via the institute `Iterable` + `Sequenceable` attachables (see the
+// type module's List.Linked+Iterable.swift / +Sequenceable.swift and the scalar node-walk
+// `Iterator`). The per-type `Swift.Sequence` conformance is dropped to match the exemplar —
+// the deferred stdlib-interop axis (one generic `Swift.Sequence` bridge, vended once).
 
 // MARK: - Equatable
 

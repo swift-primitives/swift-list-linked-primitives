@@ -12,9 +12,9 @@
 public import List_Linked_Primitive
 public import List_Primitives_Core
 public import Index_Primitives
-public import Buffer_Linked_Small_Primitive
-public import Buffer_Linked_Inline_Primitives
-public import Buffer_Linked_Primitives
+internal import Buffer_Linked_Small_Primitive
+internal import Buffer_Linked_Inline_Primitives
+internal import Buffer_Linked_Primitives
 
 // MARK: - Initialization
 
@@ -203,22 +203,13 @@ extension List.Linked.Small where Element: Copyable {
     }
 }
 
-// MARK: - ForEach (Copyable convenience)
-
-extension List.Linked.Small where Element: Copyable {
-    /// Calls the given closure for each element, front to back.
-    ///
-    /// Convenience overload for `Copyable` elements that accepts a non-borrowing closure.
-    ///
-    /// - Complexity: O(n)
-    @inlinable
-    public func forEach(_ body: (Element) -> Void) {
-        _buffer.forEach { body($0) }
-    }
-}
-
+// Note: the per-type Copyable-convenience `forEach(_ body: (Element) -> Void)` is removed;
+// for `Copyable` elements the inherited `Iterable` floor (driven by the snapshot scalar
+// iterator) provides `forEach`. The `~Copyable` `forEach`/`forEachReversed` above stay (the
+// floor only covers `Copyable` elements via the materialise adapter).
+//
 // Note: List.Linked.Small is unconditionally ~Copyable (contains Storage.Inline via inline buffer),
-// so it cannot conform to Swift.Sequence, Equatable, or Hashable.
-// Use forEach(_:) for iteration and peekFirst/peekLast for access.
-
+// so it cannot conform to Swift.Sequence, Equatable, or Hashable. It exposes span-primitive
+// iteration via Iterable + Sequenceable. Use peekFirst/peekLast for access.
+//
 // Note: Sendable conformance is declared in List Primitives Core.

@@ -194,16 +194,14 @@ struct ListLinkedDoublyTests {
     }
 
     @Test
-    func `Sequence iteration`() {
+    func `Iterable iteration`() {
         var list = List<Int>.Linked<2>()
         list.append(1)
         list.append(2)
         list.append(3)
 
         var collected: [Int] = []
-        for element in list {
-            collected.append(element)
-        }
+        list.forEach { collected.append($0) }
 
         #expect(collected == [1, 2, 3])
     }
@@ -215,7 +213,7 @@ struct ListLinkedDoublyTests {
         list.append(2)
         list.append(3)
 
-        let array = Array(list)
+        let array = toArray(list)
         #expect(array == [1, 2, 3])
     }
 
@@ -405,16 +403,14 @@ struct ListLinkedSinglyTests {
     }
 
     @Test
-    func `Sequence iteration`() {
+    func `Iterable iteration`() {
         var list = List<Int>.Linked<1>()
         list.append(1)
         list.append(2)
         list.append(3)
 
         var collected: [Int] = []
-        for element in list {
-            collected.append(element)
-        }
+        list.forEach { collected.append($0) }
 
         #expect(collected == [1, 2, 3])
     }
@@ -506,16 +502,14 @@ struct ListLinkedBoundedTests {
     }
 
     @Test
-    func `Sequence iteration`() throws {
+    func `Iterable iteration`() throws {
         var list = try List<Int>.Linked<2>.Bounded(capacity: 5)
         try list.append(1)
         try list.append(2)
         try list.append(3)
 
         var collected: [Int] = []
-        for element in list {
-            collected.append(element)
-        }
+        list.forEach { collected.append($0) }
 
         #expect(collected == [1, 2, 3])
     }
@@ -812,18 +806,18 @@ struct ListLinkedStressTests {
 
         // Verify A unchanged
         #expect(listA.count == 3)
-        #expect(Array(listA) == [1, 2, 3])
+        #expect(toArray(listA) == [1, 2, 3])
 
         // Verify B has mutations
         #expect(listB.count == 3)
-        #expect(Array(listB) == [2, 3, 4])
+        #expect(toArray(listB) == [2, 3, 4])
 
         // Further mutations on both
         listA.append(10)
         listB.append(20)
 
-        #expect(Array(listA) == [1, 2, 3, 10])
-        #expect(Array(listB) == [2, 3, 4, 20])
+        #expect(toArray(listA) == [1, 2, 3, 10])
+        #expect(toArray(listB) == [2, 3, 4, 20])
     }
 
     @Test

@@ -13,7 +13,7 @@ public import List_Linked_Primitive
 public import List_Primitives_Core
 public import Index_Primitives
 public import Buffer_Linked_Primitive
-public import Buffer_Linked_Primitives
+internal import Buffer_Linked_Primitives
 internal import Property_Primitives
 
 // MARK: - Properties

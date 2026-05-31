@@ -32,10 +32,11 @@ let package = Package(
         .package(url: "https://github.com/swift-primitives/swift-index-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-property-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-iterator-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-sequence-primitives.git", branch: "main"),
     ],
     targets: [
 
-        // MARK: - Type (linked-list type surface: Linked + Bounded/Inline/Small + errors)
+        // MARK: - Type (linked-list type surface: Linked + Bounded/Inline/Small + errors + iteration witnesses)
         .target(
             name: "List Linked Primitive",
             dependencies: [
@@ -45,6 +46,10 @@ let package = Package(
                 .product(name: "Buffer Linked Primitives", package: "swift-buffer-linked-primitives"),
                 .product(name: "Buffer Linked Small Primitive", package: "swift-buffer-linked-primitives"),
                 .product(name: "Buffer Linked Inline Primitives", package: "swift-buffer-linked-primitives"),
+                .product(name: "Iterator Primitive", package: "swift-iterator-primitives"),
+                .product(name: "Iterator Protocol", package: "swift-iterator-primitives"),
+                .product(name: "Iterable", package: "swift-iterator-primitives"),
+                .product(name: "Iterator Chunk Primitives", package: "swift-iterator-primitives"),
             ]
         ),
 
@@ -61,6 +66,9 @@ let package = Package(
                 .product(name: "Buffer Linked Inline Primitives", package: "swift-buffer-linked-primitives"),
                 .product(name: "Iterator Primitive", package: "swift-iterator-primitives"),
                 .product(name: "Iterator Protocol", package: "swift-iterator-primitives"),
+                .product(name: "Iterable", package: "swift-iterator-primitives"),
+                .product(name: "Iterator Chunk Primitives", package: "swift-iterator-primitives"),
+                .product(name: "Sequence Primitives", package: "swift-sequence-primitives"),
                 .product(name: "Property Primitives", package: "swift-property-primitives"),
             ]
         ),
@@ -82,6 +90,7 @@ let package = Package(
             dependencies: [
                 "List Linked Primitives",
                 "List Linked Primitives Test Support",
+                .product(name: "Iterable", package: "swift-iterator-primitives"),
             ]
         )
     ],
