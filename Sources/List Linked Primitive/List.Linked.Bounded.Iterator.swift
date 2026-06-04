@@ -32,10 +32,10 @@ extension List.Linked.Bounded where Element: Copyable {
     /// materialising `Iterable` face and the consuming `Sequenceable` face.
     public struct Iterator: Iterator_Primitive.Iterator.`Protocol`, IteratorProtocol {
         @usableFromInline
-        package var _inner: Buffer<Element>.Linked<N>.Iterator
+        package var _inner: Buffer<Storage<Element>.Heap>.Linked<N>.Iterator
 
         @inlinable
-        package init(inner: Buffer<Element>.Linked<N>.Iterator) {
+        package init(inner: Buffer<Storage<Element>.Heap>.Linked<N>.Iterator) {
             self._inner = inner
         }
 

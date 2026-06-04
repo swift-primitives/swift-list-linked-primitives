@@ -77,7 +77,7 @@ extension List where Element: ~Copyable {
     public struct Linked<let N: Int>: ~Copyable {
 
         @usableFromInline
-        package var _buffer: Buffer<Element>.Linked<N>
+        package var _buffer: Buffer<Storage<Element>.Heap>.Linked<N>
 
         // Tag enums for Property.Borrow accessors [PATTERN-022]
         public enum Peek {}
@@ -105,7 +105,7 @@ extension List where Element: ~Copyable {
         @safe
         public struct Bounded: ~Copyable {
             @usableFromInline
-            package var _buffer: Buffer<Element>.Linked<N>
+            package var _buffer: Buffer<Storage<Element>.Heap>.Linked<N>
 
             // Tag enums for Property.Borrow accessors [PATTERN-022]
             public enum Peek {}
@@ -156,14 +156,14 @@ extension List where Element: ~Copyable {
         /// Element cleanup is handled by `Storage.Inline`'s deinit.
         public struct Inline<let capacity: Int>: ~Copyable {
             @usableFromInline
-            package var _buffer: Buffer<Element>.Linked<N>.Inline<capacity>
+            package var _buffer: Buffer<Storage<Element>.Heap>.Linked<N>.Inline<capacity>
 
             // Tag enums for Property.Borrow accessors [PATTERN-022]
             public enum Peek {}
             public enum Reversed {}
 
             @inlinable
-            package init(_buffer: consuming Buffer<Element>.Linked<N>.Inline<capacity>) {
+            package init(_buffer: consuming Buffer<Storage<Element>.Heap>.Linked<N>.Inline<capacity>) {
                 self._buffer = _buffer
             }
         }
@@ -201,10 +201,10 @@ extension List where Element: ~Copyable {
         @safe
         public struct Small<let inlineCapacity: Int>: ~Copyable {
             @usableFromInline
-            package var _buffer: Buffer<Element>.Linked<N>.Small<inlineCapacity>
+            package var _buffer: Buffer<Storage<Element>.Heap>.Linked<N>.Small<inlineCapacity>
 
             @inlinable
-            package init(_buffer: consuming Buffer<Element>.Linked<N>.Small<inlineCapacity>) {
+            package init(_buffer: consuming Buffer<Storage<Element>.Heap>.Linked<N>.Small<inlineCapacity>) {
                 self._buffer = _buffer
             }
 
