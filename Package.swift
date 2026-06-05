@@ -33,6 +33,9 @@ let package = Package(
         .package(url: "https://github.com/swift-primitives/swift-property-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-iterator-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-sequence-primitives.git", branch: "main"),
+        // E2 (storage-small-substrate.md): verbose Storage.Contiguous<Memory.Heap> needs direct deps (MemberImportVisibility).
+        .package(url: "https://github.com/swift-primitives/swift-storage-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-memory-heap-primitives.git", branch: "main"),
     ],
     targets: [
 
@@ -50,6 +53,8 @@ let package = Package(
                 .product(name: "Iterator Protocol", package: "swift-iterator-primitives"),
                 .product(name: "Iterable", package: "swift-iterator-primitives"),
                 .product(name: "Iterator Chunk Primitives", package: "swift-iterator-primitives"),
+                .product(name: "Storage Contiguous Primitives", package: "swift-storage-primitives"),
+                .product(name: "Memory Heap Primitives", package: "swift-memory-heap-primitives"),
             ]
         ),
 

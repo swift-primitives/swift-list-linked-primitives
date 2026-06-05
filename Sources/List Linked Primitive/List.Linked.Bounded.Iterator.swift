@@ -10,6 +10,8 @@
 // ===----------------------------------------------------------------------===//
 
 public import List_Primitives_Core
+public import Memory_Heap_Primitives
+public import Storage_Contiguous_Primitives
 public import Buffer_Linked_Primitive
 public import Buffer_Linked_Primitives
 public import Iterator_Primitive
@@ -32,10 +34,10 @@ extension List.Linked.Bounded where Element: Copyable {
     /// materialising `Iterable` face and the consuming `Sequenceable` face.
     public struct Iterator: Iterator_Primitive.Iterator.`Protocol`, IteratorProtocol {
         @usableFromInline
-        package var _inner: Buffer<Storage<Element>.Heap>.Linked<N>.Iterator
+        package var _inner: Buffer<Storage<Element>.Contiguous<Memory.Heap<Element>>>.Linked<N>.Iterator
 
         @inlinable
-        package init(inner: Buffer<Storage<Element>.Heap>.Linked<N>.Iterator) {
+        package init(inner: Buffer<Storage<Element>.Contiguous<Memory.Heap<Element>>>.Linked<N>.Iterator) {
             self._inner = inner
         }
 
