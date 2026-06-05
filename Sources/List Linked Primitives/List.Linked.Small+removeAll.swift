@@ -11,14 +11,11 @@
 
 public import List_Linked_Primitive
 public import List_Primitives_Core
-import Sequence_Primitives
 
-// MARK: - Sequence.Clearable Conformance
+// MARK: - removeAll()
 
-extension List.Linked.Small: Sequence.Clearable where Element: Copyable {
+extension List.Linked.Small where Element: Copyable {
     /// Removes all elements from the small list.
-    ///
-    /// This enables `.forEach.consuming { }` pattern via `Property.Inout` extension.
     @inlinable
     public mutating func removeAll() {
         clear()
