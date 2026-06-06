@@ -23,8 +23,6 @@ public import List_Primitives_Core
 // Use the typealias forms in your code:
 // - List<Element>.Linked<N>.Error
 // - List<Element>.Linked<N>.Bounded.Error
-// - List<Element>.Linked<N>.Inline.Error
-// - List<Element>.Linked<N>.Small.Error
 
 /// Hoisted implementation of ``List/Linked/Error``.
 ///
@@ -49,25 +47,6 @@ public enum __ListLinkedBoundedError: Swift.Error, Sendable, Equatable {
 
     /// The list is full and cannot accept more elements.
     case overflow
-}
-
-/// Hoisted implementation of ``List/Linked/Inline/Error``.
-///
-/// - Note: Use ``List/Linked/Inline/Error`` in your code, not this type directly.
-public enum __ListLinkedInlineError: Swift.Error, Sendable, Equatable {
-    /// The list is empty and the operation requires elements.
-    case empty
-
-    /// The list is full and cannot accept more elements.
-    case overflow
-}
-
-/// Hoisted implementation of ``List/Linked/Small/Error``.
-///
-/// - Note: Use ``List/Linked/Small/Error`` in your code, not this type directly.
-public enum __ListLinkedSmallError: Swift.Error, Sendable, Equatable {
-    /// The list is empty and the operation requires elements.
-    case empty
 }
 
 // MARK: - Typealiases (Nest.Name API)
@@ -95,23 +74,4 @@ extension List.Linked.Bounded where Element: ~Copyable {
     /// - ``Error/invalidCapacity``: The requested capacity is invalid (negative).
     /// - ``Error/overflow``: The list is full and cannot accept more elements.
     public typealias Error = __ListLinkedBoundedError
-}
-
-extension List.Linked.Inline where Element: ~Copyable {
-    /// Errors that can occur during inline linked list operations.
-    ///
-    /// ## Cases
-    ///
-    /// - ``Error/empty``: The list is empty and the operation requires elements.
-    /// - ``Error/overflow``: The list is full and cannot accept more elements.
-    public typealias Error = __ListLinkedInlineError
-}
-
-extension List.Linked.Small where Element: ~Copyable {
-    /// Errors that can occur during small linked list operations.
-    ///
-    /// ## Cases
-    ///
-    /// - ``Error/empty``: The list is empty and the operation requires elements.
-    public typealias Error = __ListLinkedSmallError
 }

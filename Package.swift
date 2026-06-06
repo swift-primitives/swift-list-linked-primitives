@@ -39,7 +39,7 @@ let package = Package(
     ],
     targets: [
 
-        // MARK: - Type (linked-list type surface: Linked + Bounded/Inline/Small + errors + iteration witnesses)
+        // MARK: - Type (linked-list type surface: Linked + Bounded + errors + iteration witnesses)
         .target(
             name: "List Linked Primitive",
             dependencies: [
@@ -47,8 +47,6 @@ let package = Package(
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
                 .product(name: "Buffer Linked Primitive", package: "swift-buffer-linked-primitives"),
                 .product(name: "Buffer Linked Primitives", package: "swift-buffer-linked-primitives"),
-                .product(name: "Buffer Linked Small Primitive", package: "swift-buffer-linked-primitives"),
-                .product(name: "Buffer Linked Inline Primitives", package: "swift-buffer-linked-primitives"),
                 .product(name: "Iterator Primitive", package: "swift-iterator-primitives"),
                 .product(name: "Iterator Protocol", package: "swift-iterator-primitives"),
                 .product(name: "Iterable", package: "swift-iterator-primitives"),
@@ -67,8 +65,6 @@ let package = Package(
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
                 .product(name: "Buffer Linked Primitive", package: "swift-buffer-linked-primitives"),
                 .product(name: "Buffer Linked Primitives", package: "swift-buffer-linked-primitives"),
-                .product(name: "Buffer Linked Small Primitive", package: "swift-buffer-linked-primitives"),
-                .product(name: "Buffer Linked Inline Primitives", package: "swift-buffer-linked-primitives"),
                 .product(name: "Iterator Primitive", package: "swift-iterator-primitives"),
                 .product(name: "Iterator Protocol", package: "swift-iterator-primitives"),
                 .product(name: "Iterable", package: "swift-iterator-primitives"),

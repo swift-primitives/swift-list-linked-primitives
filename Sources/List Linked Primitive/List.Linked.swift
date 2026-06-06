@@ -14,8 +14,6 @@ public import Memory_Heap_Primitives
 public import Storage_Contiguous_Primitives
 public import Index_Primitives
 public import Buffer_Linked_Primitive
-public import Buffer_Linked_Small_Primitive
-public import Buffer_Linked_Inline_Primitives
 internal import Buffer_Linked_Primitives
 
 extension List where Element: ~Copyable {
@@ -50,8 +48,6 @@ extension List where Element: ~Copyable {
     ///
     /// - ``Linked``: Dynamically-growing with amortized O(1) operations (this type)
     /// - ``Linked/Bounded``: Fixed-capacity, throws on overflow
-    /// - ``Linked/Inline``: Zero-allocation inline storage with compile-time capacity
-    /// - ``Linked/Small``: Inline storage with automatic spill to heap
     ///
     /// ## Arena-Based Storage
     ///
@@ -130,91 +126,6 @@ extension List where Element: ~Copyable {
             }
         }
 
-        // MARK: - Inline (Fixed-Capacity, Stack-Allocated)
-
-        /// A fixed-capacity, inline-storage linked list with compile-time capacity.
-        ///
-        /// `Linked.Inline` stores elements directly within the struct's memory layout,
-        /// requiring no heap allocation. The capacity is specified as a compile-time
-        /// generic parameter.
-        ///
-        /// ## Example
-        ///
-        /// ```swift
-        /// var list = List<Int>.Linked<2>.Inline<8>()
-        /// try list.prepend(1)
-        /// try list.append(2)
-        /// ```
-        ///
-        /// ## ~Copyable Support
-        ///
-        /// Unlike previous versions, Inline now supports `~Copyable` elements
-        /// via `Buffer.Linked.Inline` (which uses `Storage<Node>.Inline` with `@_rawLayout`).
-        ///
-        /// ## Non-Copyable Container
-        ///
-        /// `Inline` is unconditionally `~Copyable` (move-only) because it contains
-        /// `Storage.Inline` which uses `@_rawLayout`.
-        /// Element cleanup is handled by `Storage.Inline`'s deinit.
-        public struct Inline<let capacity: Int>: ~Copyable {
-            @usableFromInline
-            package var _buffer: Buffer<Storage<Element>.Contiguous<Memory.Heap<Element>>>.Linked<N>.Inline<capacity>
-
-            // Tag enums for Property.Borrow accessors [PATTERN-022]
-            public enum Peek {}
-            public enum Reversed {}
-
-            @inlinable
-            package init(_buffer: consuming Buffer<Storage<Element>.Contiguous<Memory.Heap<Element>>>.Linked<N>.Inline<capacity>) {
-                self._buffer = _buffer
-            }
-        }
-
-        // MARK: - Small (Inline + Heap Spill)
-
-        /// A linked list with small-buffer optimization (SmallVec pattern).
-        ///
-        /// `Linked.Small` stores up to `inlineCapacity` elements in inline storage,
-        /// then automatically spills to heap storage when that capacity is exceeded.
-        ///
-        /// ## Example
-        ///
-        /// ```swift
-        /// var list = List<Int>.Linked<2>.Small<4>()
-        /// list.prepend(1)  // Inline
-        /// list.prepend(2)  // Inline
-        /// list.prepend(3)  // Inline
-        /// list.prepend(4)  // Inline
-        /// list.prepend(5)  // Spills to heap
-        /// ```
-        ///
-        /// ## ~Copyable Support
-        ///
-        /// Supports `~Copyable` elements via `Buffer.Linked.Small`.
-        ///
-        /// ## Non-Copyable Container
-        ///
-        /// `Small` is unconditionally `~Copyable` because it contains inline storage.
-        /// Element cleanup is handled by `Storage.Inline`'s deinit (inline path)
-        /// or `Storage.Contiguous<Memory.Heap>`'s deinit (spilled path).
-        // WHY: Category D — structural Sendable workaround; the type is
-        // WHY: structurally value-safe but the compiler cannot synthesize
-        // WHY: Sendable due to a stored pointer / generic parameter shape.
-        @safe
-        public struct Small<let inlineCapacity: Int>: ~Copyable {
-            @usableFromInline
-            package var _buffer: Buffer<Storage<Element>.Contiguous<Memory.Heap<Element>>>.Linked<N>.Small<inlineCapacity>
-
-            @inlinable
-            package init(_buffer: consuming Buffer<Storage<Element>.Contiguous<Memory.Heap<Element>>>.Linked<N>.Small<inlineCapacity>) {
-                self._buffer = _buffer
-            }
-
-            /// Whether the list is currently using heap storage.
-            @inlinable
-            public var isSpilled: Bool { _buffer.isSpilled }
-        }
-
         // MARK: - Init
 
         /// Creates an empty linked list.
@@ -250,9 +161,6 @@ extension List.Linked: Copyable where Element: Copyable {}
 
 /// `List.Linked.Bounded` is `Copyable` when its elements are `Copyable`.
 extension List.Linked.Bounded: Copyable where Element: Copyable {}
-
-// Note: List.Linked.Inline and List.Linked.Small are UNCONDITIONALLY ~Copyable
-// because they contain Storage.Inline (which uses @_rawLayout).
 
 // MARK: - Sendable
 
@@ -298,43 +206,3 @@ extension List.Linked: @unsafe @unchecked Sendable where Element: Sendable {}
 ///
 /// - Not a concurrent bounded queue; external synchronization required.
 extension List.Linked.Bounded: @unsafe @unchecked Sendable where Element: Sendable {}
-
-/// Sendable conformance for `List.Linked.Inline`.
-///
-/// ## Safety Invariant
-///
-/// `List.Linked.Inline<capacity>` is unconditionally `~Copyable` (it
-/// contains `Storage.Inline` which uses `@_rawLayout`). Unique ownership
-/// ensures the inline bytes transfer intact across isolation boundaries.
-///
-/// ## Intended Use
-///
-/// - Zero-allocation linked list moved from builder to consumer.
-/// - Embedded contexts where compile-time capacity is known and the list
-///   crosses one isolation boundary during setup.
-///
-/// ## Non-Goals
-///
-/// - Not shareable; inline storage is tied to one owner at a time.
-/// - No synchronization; single-owner is the only supported model.
-extension List.Linked.Inline: @unsafe @unchecked Sendable where Element: Sendable {}
-
-/// Sendable conformance for `List.Linked.Small`.
-///
-/// ## Safety Invariant
-///
-/// `List.Linked.Small<inlineCapacity>` is unconditionally `~Copyable`
-/// (inline-plus-spill storage using `Storage.Inline`). Unique ownership
-/// ensures the inline bytes and any spilled heap allocation transfer
-/// together across isolation boundaries.
-///
-/// ## Intended Use
-///
-/// - Small-size-optimized linked lists handed from builder to consumer
-///   where typical workloads fit inline but can spill to heap.
-///
-/// ## Non-Goals
-///
-/// - Not safe for concurrent mutation on either the inline or spilled path.
-/// - Spill transitions are not synchronized against external observers.
-extension List.Linked.Small: @unsafe @unchecked Sendable where Element: Sendable {}

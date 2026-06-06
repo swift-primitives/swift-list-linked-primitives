@@ -6,6 +6,4 @@
 @_exported public import List_Primitives_Core
 @_exported public import Index_Primitives
 @_exported public import Buffer_Linked_Primitive
-@_exported public import Buffer_Linked_Small_Primitive
-@_exported public import Buffer_Linked_Inline_Primitives
 @_exported public import Buffer_Linked_Primitives
