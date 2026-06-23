@@ -18,10 +18,10 @@ public import Iterator_Chunk_Primitives
 //
 // The pointer-chained list type has NO contiguous element span, so — unlike the contiguous
 // single-element containers (set-ordered / stack / heap) which vend `Iterator.Chunk` over a
-// `Memory.Contiguous.Protocol` span — `List.Linked` produces its bulk iterator by wrapping
+// `Span.Protocol` span — `List.Linked` produces its bulk iterator by wrapping
 // the scalar node-walk `Iterator` in `Iterator.Materializing`, the span-primitive adapter for
 // generator-style sequences (the same shape `Single` / dict-ordered use). The list therefore
-// does NOT conform `Memory.Contiguous.Protocol` (no element span exists).
+// does NOT conform `Span.Protocol` (no element span exists).
 //
 // Both `Iterable` and `Sequenceable` declare `associatedtype Iterator`, which Swift unifies
 // across protocols; the dual conformer splits the two bindings with `@_implements`.

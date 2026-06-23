@@ -18,7 +18,7 @@ public import Iterator_Chunk_Primitives
 //
 // `List.Linked.Bounded` has NO contiguous element span; it produces its bulk iterator by
 // wrapping the scalar node-walk `Iterator` in `Iterator.Materializing` and does NOT conform
-// `Memory.Contiguous.Protocol`. `@_implements` splits the unified `Iterator` associated type:
+// `Span.Protocol`. `@_implements` splits the unified `Iterator` associated type:
 // `Iterable.Iterator` binds the materialising bulk iterator here; `Sequenceable.Iterator`
 // binds the scalar `Iterator` (List.Linked.Bounded+Sequenceable.swift).
 

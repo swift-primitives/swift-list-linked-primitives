@@ -21,7 +21,7 @@ public import Iterator_Protocol
 //
 // `List.Linked.Bounded` is pointer-chained (Buffer.Linked-backed): no contiguous element span,
 // so it produces its bulk iterator by wrapping this hand-written scalar node-walk in
-// `Iterator.Materializing` and does NOT conform `Memory.Contiguous.Protocol`. The scalar walk
+// `Iterator.Materializing` and does NOT conform `Span.Protocol`. The scalar walk
 // follows the backing `Buffer.Linked` link chain and is IRREDUCIBLE — not deduplicated via any
 // `memory-sequence` bridge or generic `Memory.Cursor`.
 //
