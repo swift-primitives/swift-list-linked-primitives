@@ -43,7 +43,7 @@ let package = Package(
         .target(
             name: "List Linked Primitive",
             dependencies: [
-                .product(name: "List Primitives Core", package: "swift-list-primitives"),
+                .product(name: "List Primitives", package: "swift-list-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
                 .product(name: "Buffer Linked Primitive", package: "swift-buffer-linked-primitives"),
                 .product(name: "Buffer Linked Primitives", package: "swift-buffer-linked-primitives"),
@@ -61,7 +61,7 @@ let package = Package(
             name: "List Linked Primitives",
             dependencies: [
                 "List Linked Primitive",
-                .product(name: "List Primitives Core", package: "swift-list-primitives"),
+                .product(name: "List Primitives", package: "swift-list-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
                 .product(name: "Buffer Linked Primitive", package: "swift-buffer-linked-primitives"),
                 .product(name: "Buffer Linked Primitives", package: "swift-buffer-linked-primitives"),

@@ -10,7 +10,7 @@
 // ===----------------------------------------------------------------------===//
 
 public import List_Linked_Primitive
-public import List_Primitives_Core
+public import List_Primitives
 public import Index_Primitives
 
 extension List.Linked.Bounded where Element: ~Copyable {

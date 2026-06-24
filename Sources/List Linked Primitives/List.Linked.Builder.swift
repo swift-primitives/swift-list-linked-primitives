@@ -10,7 +10,7 @@
 // ===----------------------------------------------------------------------===//
 
 public import List_Linked_Primitive
-public import List_Primitives_Core
+public import List_Primitives
 
 extension List.Linked where Element: ~Copyable {
     /// A result builder for declaratively constructing linked lists.

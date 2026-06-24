@@ -9,7 +9,7 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import List_Primitives_Core
+public import List_Primitives
 public import Memory_Heap_Primitives
 public import Storage_Contiguous_Primitives
 public import Buffer_Linked_Primitive

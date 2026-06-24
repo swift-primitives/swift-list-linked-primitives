@@ -10,7 +10,7 @@
 // ===----------------------------------------------------------------------===//
 
 public import List_Linked_Primitive
-public import List_Primitives_Core
+public import List_Primitives
 internal import Sequence_Primitives
 
 // MARK: - Sequenceable (single-pass, consuming)

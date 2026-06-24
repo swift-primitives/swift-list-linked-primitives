@@ -9,7 +9,7 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import List_Primitives_Core
+public import List_Primitives
 
 // MARK: - Hoisted Error Types (Module Level)
 //

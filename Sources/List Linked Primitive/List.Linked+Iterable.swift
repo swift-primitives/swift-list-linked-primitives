@@ -9,7 +9,7 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import List_Primitives_Core
+public import List_Primitives
 public import Iterable
 public import Iterator_Primitive
 public import Iterator_Chunk_Primitives

@@ -9,7 +9,7 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import List_Primitives_Core
+public import List_Primitives
 internal import Buffer_Linked_Primitive
 internal import Buffer_Linked_Primitives
 
