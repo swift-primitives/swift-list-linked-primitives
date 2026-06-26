@@ -9,200 +9,128 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import List_Primitives
-public import Memory_Heap_Primitives
-public import Storage_Contiguous_Primitives
-public import Index_Primitives
 public import Buffer_Linked_Primitive
-internal import Buffer_Linked_Primitives
+public import Index_Primitives
+public import List_Primitives
+
+// MARK: - List.Linked (the ADT tier — generic over the storage COLUMN)
+//
+// The ratified two-column design (mirrors `Array<S>`, `PROPOSAL-tower-perfected-design.md` §1.3):
+// `List.Linked` is a thin semantic discipline over a `Buffer<S>.Linked<N>`, generic over the
+// storage column `S`, and **copyability flows from the column** — `Buffer<Shared<…>>.Linked` is
+// `Copyable` when the element is, so `List<E>.Linked<Shared<…>, N>` is the value-semantic (CoW)
+// column and `List<E>.Linked<Storage<…>.Generational<…>, N>` stays the zero-cost move-only column.
+//
+// The user element is the node's payload (`S.Element == Node<Element, N>`), pinned here at the
+// type level because `Element` is in scope from `List`. Convenience typealiases (`List<E>.Doubly`,
+// `List<E>.Value.Doubly`, …) hide the verbose column spelling.
 
 extension List where Element: ~Copyable {
 
-    /// A linked list with N links per node.
+    /// A linked list with `N` links per node, over an explicit storage column.
     ///
-    /// `Linked<N>` is the canonical linked list type where N specifies the number
-    /// of links per node:
+    /// - `Linked<S, 1>`: singly-linked (forward link; `popLast` is O(n))
+    /// - `Linked<S, 2>`: doubly-linked (forward + backward; `popLast` is O(1))
     ///
-    /// - `Linked<1>`: Singly-linked (forward link only)
-    /// - `Linked<2>`: Doubly-linked (forward + backward links)
-    ///
-    /// ## Example
-    ///
-    /// ```swift
-    /// // Singly-linked list (with tail pointer)
-    /// var singly = List<Int>.Linked<1>()
-    /// singly.prepend(1)     // O(1)
-    /// singly.append(2)      // O(1) - uses tail pointer
-    /// singly.popFirst()     // O(1)
-    /// singly.popLast()      // O(n) - must traverse to find prev
-    ///
-    /// // Doubly-linked list
-    /// var doubly = List<Int>.Linked<2>()
-    /// doubly.prepend(1)     // O(1)
-    /// doubly.append(2)      // O(1)
-    /// doubly.popFirst()     // O(1)
-    /// doubly.popLast()      // O(1)
-    /// ```
-    ///
-    /// ## Variants
-    ///
-    /// - ``Linked``: Dynamically-growing with amortized O(1) operations (this type)
-    /// - ``Linked/Bounded``: Fixed-capacity, throws on overflow
-    ///
-    /// ## Arena-Based Storage
-    ///
-    /// Uses arena-based storage where all nodes are stored contiguously. Nodes
-    /// reference each other by index rather than pointer, improving cache locality.
-    ///
-    /// ## Move-Only Support
-    ///
-    /// Both the list and its elements can be `~Copyable`:
-    ///
-    /// ```swift
-    /// struct FileHandle: ~Copyable { ... }
-    /// var handles = List<FileHandle>.Linked<2>()
-    /// handles.prepend(FileHandle())
-    /// ```
-    ///
-    /// ## Copy-on-Write
-    ///
-    /// When `Element` is `Copyable`, `Linked` uses copy-on-write semantics:
-    /// copies share storage until mutation.
-    // WHY: Category D — structural Sendable workaround; the type is
-    // WHY: structurally value-safe but the compiler cannot synthesize
-    // WHY: Sendable due to a stored pointer / generic parameter shape.
-    @safe
-    public struct Linked<let N: Int>: ~Copyable {
+    /// Prefer the column typealiases — `List<E>.Doubly` / `List<E>.Singly` (move-only) and
+    /// `List<E>.Value.Doubly` / `List<E>.Value.Singly` (CoW) — over spelling `S` directly.
+    /// - Important: The storage-capability constraint (`S: Store.Generational.`Protocol``,
+    ///   `S.Element == Node<Element, N>`) is deliberately NOT on the type — it lives on the
+    ///   operation extensions, exactly as `Buffer.Linked` does it. Putting it on the type forces
+    ///   the column's `Store.Generational.`Protocol`` conformance into the (deeply-nested) type
+    ///   metadata, which miscompiles cross-package for the `Shared` (CoW) column on Apple Swift
+    ///   6.3.2 (SIGSEGV on bare construction). Keeping the type bound to `S: ~Copyable` only,
+    ///   and constraining at the call sites, avoids embedding that conformance in the metadata.
+    @frozen
+    public struct Linked<S: ~Copyable, let N: Int>: ~Copyable {
 
+        /// The backing linked buffer over the storage column.
         @usableFromInline
-        package var _buffer: Buffer<Storage<Element>.Contiguous<Memory.Heap<Element>>>.Linked<N>
+        package var _buffer: Buffer<S>.Linked<N>
 
-        // Tag enums for Property.Borrow accessors [PATTERN-022]
+        @inlinable
+        package init(_buffer: consuming Buffer<S>.Linked<N>) {
+            self._buffer = _buffer
+        }
+
+        /// Tag namespace for the borrowing `peek` accessor.
         public enum Peek {}
+
+        /// Tag namespace for the borrowing `reversed` accessor.
         public enum Reversed {}
 
-        // MARK: - Variants (declared here for ~Copyable propagation)
+        // MARK: - Bounded variant (nested for ~Copyable propagation, [MEM-COPY-006])
 
-        /// A fixed-capacity linked list.
+        /// A fixed-capacity linked list — allocates storage upfront and throws on overflow.
         ///
-        /// `Linked.Bounded` allocates storage upfront and throws on overflow.
-        /// Use this variant when capacity is known or in contexts requiring
-        /// predictable memory behavior (embedded, real-time).
-        ///
-        /// ## Example
-        ///
-        /// ```swift
-        /// var list = try List<Int>.Linked<2>.Bounded(capacity: 10)
-        /// try list.prepend(1)
-        /// try list.append(2)
-        /// list.popFirst()  // Optional(1)
-        /// ```
-        // WHY: Category D — structural Sendable workaround; the type is
-        // WHY: structurally value-safe but the compiler cannot synthesize
-        // WHY: Sendable due to a stored pointer / generic parameter shape.
-        @safe
+        /// Use when capacity is known or in contexts requiring predictable memory behavior
+        /// (embedded, real-time). Shares the same storage column `S` as its enclosing `Linked`.
+        @frozen
         public struct Bounded: ~Copyable {
+            /// The backing linked buffer over the storage column.
             @usableFromInline
-            package var _buffer: Buffer<Storage<Element>.Contiguous<Memory.Heap<Element>>>.Linked<N>
-
-            // Tag enums for Property.Borrow accessors [PATTERN-022]
-            public enum Peek {}
-            public enum Reversed {}
+            package var _buffer: Buffer<S>.Linked<N>
 
             /// The maximum number of elements the list can hold.
             public let capacity: Index_Primitives.Index<Element>.Count
 
-            /// Creates a list with the specified capacity.
-            ///
-            /// - Parameter capacity: Maximum number of elements. Must be non-negative.
-            /// - Throws: ``Bounded/Error/invalidCapacity`` if capacity is negative.
             @inlinable
-            public init(capacity: Index_Primitives.Index<Element>.Count) throws(__ListLinkedBoundedError) {
-                guard capacity > .zero else {
-                    throw .invalidCapacity
-                }
-                self._buffer = try! .create(capacity: capacity.retag())
+            package init(_buffer: consuming Buffer<S>.Linked<N>, capacity: Index_Primitives.Index<Element>.Count) {
+                self._buffer = _buffer
                 self.capacity = capacity
             }
-        }
 
-        // MARK: - Init
+            /// Tag namespace for the borrowing `peek` accessor.
+            public enum Peek {}
 
-        /// Creates an empty linked list.
-        ///
-        /// Allocates an initial pool with capacity 4.
-        @inlinable
-        public init() {
-            precondition(N >= 1 && N <= 2, "Linked<N> requires N in 1...2")
-            self._buffer = try! .create(capacity: 4)
-        }
-
-        /// Creates a list with reserved capacity.
-        ///
-        /// Pre-allocates storage for the specified number of elements.
-        ///
-        /// - Parameter capacity: Number of elements to reserve space for. Must be positive.
-        /// - Throws: ``Linked/Error/invalidCapacity`` if capacity is not positive.
-        @inlinable
-        public init(reservingCapacity capacity: Int) throws(List<Element>.Linked<N>.Error) {
-            precondition(N >= 1 && N <= 2, "Linked<N> requires N in 1...2")
-            guard capacity > 0 else {
-                throw .invalidCapacity
-            }
-            self._buffer = try! .create(capacity: capacity)
+            /// Tag namespace for the borrowing `reversed` accessor.
+            public enum Reversed {}
         }
     }
 }
 
-// MARK: - Conditional Copyable
+// MARK: - Conditional Conformances (co-located per [COPY-FIX-004])
 
-/// `List.Linked` is `Copyable` when its elements are `Copyable`.
-extension List.Linked: Copyable where Element: Copyable {}
+/// `List.Linked` is `Copyable` exactly when its column is — the S5 chain through `Shared`.
+/// `Element: ~Copyable` is restated per [MEM-COPY-004] (copyability flows from `S`, not the element).
+extension List.Linked: Copyable where S: Copyable, Element: ~Copyable {}
 
-/// `List.Linked.Bounded` is `Copyable` when its elements are `Copyable`.
-extension List.Linked.Bounded: Copyable where Element: Copyable {}
+/// Sendable via the column's own discipline (single-owner move-only, or CoW-restored `Shared`).
+extension List.Linked: @unsafe @unchecked Sendable where S: Sendable, Element: ~Copyable {}
 
-// MARK: - Sendable
+/// `List.Linked.Bounded` is `Copyable` exactly when its column is — the S5 chain.
+extension List.Linked.Bounded: Copyable where S: Copyable, Element: ~Copyable {}
 
-/// Sendable conformance for `List.Linked`.
-///
-/// ## Safety Invariant
-///
-/// `List.Linked<N>` is `~Copyable` (conditionally `Copyable` when
-/// `Element: Copyable` via COW). Under the `~Copyable` path the list is
-/// a single owner; under COW the backing arena storage handles its own
-/// aliasing via reference counting. Sending across isolation boundaries
-/// is sound because either ownership is unique (moved) or the COW backing
-/// preserves value semantics.
-///
-/// ## Intended Use
-///
-/// - Transferring a prepared linked list to a worker thread.
-/// - Handing off a linked list of `~Copyable` resources across actors.
-/// - Pipeline stages where each stage owns the list in turn.
-///
-/// ## Non-Goals
-///
-/// - Does not synchronize mutation — single-owner semantics are required.
-/// - Does not provide lock-free list operations.
-/// - Not suitable as a shared concurrent queue.
-extension List.Linked: @unsafe @unchecked Sendable where Element: Sendable {}
+/// Sendable via the column's own discipline.
+extension List.Linked.Bounded: @unsafe @unchecked Sendable where S: Sendable, Element: ~Copyable {}
 
-/// Sendable conformance for `List.Linked.Bounded`.
-///
-/// ## Safety Invariant
-///
-/// `List.Linked.Bounded` is `~Copyable` (conditionally `Copyable` when
-/// `Element: Copyable`). The fixed capacity is pre-allocated; transfer
-/// across threads moves the full buffer under unique ownership.
-///
-/// ## Intended Use
-///
-/// - Transferring a bounded linked list to a consumer with predictable
-///   memory behavior.
-/// - Handing off bounded resource queues between phases of a pipeline.
-///
-/// ## Non-Goals
-///
-/// - Not a concurrent bounded queue; external synchronization required.
-extension List.Linked.Bounded: @unsafe @unchecked Sendable where Element: Sendable {}
+// MARK: - Column Typealiases (ergonomic spellings)
+
+extension List where Element: ~Copyable {
+    /// Doubly-linked, move-only (zero-cost default column).
+    public typealias Doubly =
+        Linked<Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 2>>, 2>
+
+    /// Singly-linked, move-only (zero-cost default column).
+    public typealias Singly =
+        Linked<Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 1>>, 1>
+}
+
+extension List where Element: Copyable {
+    /// Value-semantic (CoW) linked-list columns.
+    public enum Value {
+        /// Doubly-linked, value-semantic (the `Shared` CoW column).
+        public typealias Doubly =
+            List<Element>.Linked<
+                Shared<Node<Element, 2>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 2>>>,
+                2
+            >
+
+        /// Singly-linked, value-semantic (the `Shared` CoW column).
+        public typealias Singly =
+            List<Element>.Linked<
+                Shared<Node<Element, 1>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 1>>>,
+                1
+            >
+    }
+}

@@ -55,7 +55,7 @@ public enum __ListLinkedBoundedError: Swift.Error, Sendable, Equatable {
 // implicit Copyable constraint. This is a documented Swift compiler limitation.
 // See [MEM-COPY-004].
 
-extension List.Linked where Element: ~Copyable {
+extension List.Linked where Element: ~Copyable, S: ~Copyable {
     /// Errors that can occur during linked list operations.
     ///
     /// ## Cases
@@ -65,7 +65,7 @@ extension List.Linked where Element: ~Copyable {
     public typealias Error = __ListLinkedError
 }
 
-extension List.Linked.Bounded where Element: ~Copyable {
+extension List.Linked.Bounded where Element: ~Copyable, S: ~Copyable {
     /// Errors that can occur during bounded linked list operations.
     ///
     /// ## Cases
