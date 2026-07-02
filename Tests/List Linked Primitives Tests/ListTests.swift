@@ -66,7 +66,10 @@ struct ListLinkedValueTests {
     func `equality is a front-to-back walk`() {
         var a = List<Int>.Value.Doubly()
         var b = List<Int>.Value.Doubly()
-        for value in [1, 2, 3] { a.append(value); b.append(value) }
+        for value in [1, 2, 3] {
+            a.append(value)
+            b.append(value)
+        }
         #expect(a == b)
         b.append(4)
         #expect(a != b)
@@ -78,7 +81,10 @@ struct ListLinkedValueTests {
     func `hash agrees with equality`() {
         var a = List<Int>.Value.Doubly()
         var b = List<Int>.Value.Doubly()
-        for value in [5, 6, 7] { a.append(value); b.append(value) }
+        for value in [5, 6, 7] {
+            a.append(value)
+            b.append(value)
+        }
         #expect(a.hashValue == b.hashValue)
     }
 
@@ -124,7 +130,10 @@ struct ListLinkedMoveOnlyTests {
         list.append(Token(8))
         let frontID = list.peekFront { (t: borrowing Token) in t.id }
         #expect(frontID == 7)
-        guard let taken = list.popFirst() else { Issue.record("expected element"); return }
+        guard let taken = list.popFirst() else {
+            Issue.record("expected element")
+            return
+        }
         #expect(taken.id == 7)
         _ = consume taken
     }
