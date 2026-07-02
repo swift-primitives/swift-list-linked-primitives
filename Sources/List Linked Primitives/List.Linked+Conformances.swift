@@ -25,6 +25,7 @@ public import List_Primitives
 
 extension List.Linked: Equatable
 where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+    /// Two lists are equal when their live elements match front to back.
     @inlinable
     public static func == (lhs: Self, rhs: Self) -> Bool {
         guard lhs._buffer.count == rhs._buffer.count else { return false }
@@ -38,6 +39,7 @@ where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Eleme
 
 extension List.Linked: Hashable
 where S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+    /// Hashes the live elements, front to back.
     @inlinable
     public func hash(into hasher: inout Hasher) {
         var elements: [Element] = []
@@ -48,6 +50,7 @@ where S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Elemen
 
 extension List.Linked.Bounded: Equatable
 where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+    /// Two bounded lists are equal when their live elements match front to back.
     @inlinable
     public static func == (lhs: Self, rhs: Self) -> Bool {
         guard lhs._buffer.count == rhs._buffer.count else { return false }
@@ -61,6 +64,7 @@ where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Eleme
 
 extension List.Linked.Bounded: Hashable
 where S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+    /// Hashes the live elements, front to back.
     @inlinable
     public func hash(into hasher: inout Hasher) {
         var elements: [Element] = []
