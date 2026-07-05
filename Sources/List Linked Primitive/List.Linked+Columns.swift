@@ -11,7 +11,6 @@
 
 public import Buffer_Linked_Primitive
 public import Index_Primitives
-public import List_Primitives
 
 // MARK: - Construction (per column)
 //
@@ -21,7 +20,7 @@ public import List_Primitives
 
 // MARK: Move-only column
 
-extension List.Linked where S: ~Copyable, Element: ~Copyable {
+extension __ListLinked where S: ~Copyable, Element: ~Copyable {
     /// Creates an empty linked list (move-only column), reserving capacity for 4 nodes.
     @inlinable
     public init() where S == Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>> {
@@ -39,7 +38,7 @@ extension List.Linked where S: ~Copyable, Element: ~Copyable {
 
 // MARK: CoW (Shared) column
 
-extension List.Linked where S: ~Copyable, Element: ~Copyable {
+extension __ListLinked where S: ~Copyable, Element: ~Copyable {
     /// Creates an empty value-semantic linked list (CoW column), reserving capacity for 4 nodes.
     @inlinable
     public init()
@@ -64,7 +63,7 @@ extension List.Linked where S: ~Copyable, Element: ~Copyable {
 
 // MARK: - Bounded construction (per column)
 
-extension List.Linked.Bounded where S: ~Copyable, Element: ~Copyable {
+extension __ListLinked.Bounded where S: ~Copyable, Element: ~Copyable {
     /// Creates a fixed-capacity linked list (move-only column).
     @inlinable
     public init(capacity: Index_Primitives.Index<Element>.Count) throws(__ListLinkedBoundedError)

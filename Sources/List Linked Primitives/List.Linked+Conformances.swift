@@ -11,7 +11,6 @@
 
 public import Buffer_Linked_Primitive
 public import List_Linked_Primitive
-public import List_Primitives
 
 // MARK: - Equatable / Hashable (front-to-back SEQUENCE walks)
 //
@@ -23,7 +22,7 @@ public import List_Primitives
 // The seam constraint sits on the EXTENSION (call site), never on the `List.Linked` type — see
 // `List.Linked.swift` for why (cross-package type-metadata miscompile).
 
-extension List.Linked: Equatable
+extension __ListLinked: Equatable
 where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// Two lists are equal when their live elements match front to back.
     @inlinable
@@ -37,7 +36,7 @@ where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Eleme
     }
 }
 
-extension List.Linked: Hashable
+extension __ListLinked: Hashable
 where S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// Hashes the live elements, front to back.
     @inlinable
@@ -48,7 +47,7 @@ where S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Elemen
     }
 }
 
-extension List.Linked.Bounded: Equatable
+extension __ListLinked.Bounded: Equatable
 where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// Two bounded lists are equal when their live elements match front to back.
     @inlinable
@@ -62,7 +61,7 @@ where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Eleme
     }
 }
 
-extension List.Linked.Bounded: Hashable
+extension __ListLinked.Bounded: Hashable
 where S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// Hashes the live elements, front to back.
     @inlinable
@@ -75,22 +74,22 @@ where S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Elemen
 
 // MARK: - Iteration (stdlib Sequence over a snapshot; the CoW column)
 
-extension List.Linked
+extension __ListLinked
 where Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// A forward iterator over a snapshot of the elements, head to tail.
     @inlinable
     public func makeIterator() -> [Element].Iterator { _buffer.makeIterator() }
 }
 
-extension List.Linked.Bounded
+extension __ListLinked.Bounded
 where Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// A forward iterator over a snapshot of the elements, head to tail.
     @inlinable
     public func makeIterator() -> [Element].Iterator { _buffer.makeIterator() }
 }
 
-extension List.Linked: Swift.Sequence
+extension __ListLinked: Swift.Sequence
 where S: Copyable, Element: Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {}
 
-extension List.Linked.Bounded: Swift.Sequence
+extension __ListLinked.Bounded: Swift.Sequence
 where S: Copyable, Element: Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {}

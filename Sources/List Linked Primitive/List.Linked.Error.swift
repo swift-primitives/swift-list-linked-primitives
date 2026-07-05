@@ -9,8 +9,6 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import List_Primitives
-
 // MARK: - Hoisted Error Types (Module Level)
 //
 // Swift does not allow nested types inside generic types to be easily accessed.
@@ -27,6 +25,7 @@ public import List_Primitives
 /// Hoisted implementation of ``List/Linked/Error``.
 ///
 /// - Note: Use ``List/Linked/Error`` in your code, not this type directly.
+@_documentation(visibility: public)
 public enum __ListLinkedError: Swift.Error, Sendable, Equatable {
     /// The list is empty and the operation requires elements.
     case empty
@@ -38,6 +37,7 @@ public enum __ListLinkedError: Swift.Error, Sendable, Equatable {
 /// Hoisted implementation of ``List/Linked/Bounded/Error``.
 ///
 /// - Note: Use ``List/Linked/Bounded/Error`` in your code, not this type directly.
+@_documentation(visibility: public)
 public enum __ListLinkedBoundedError: Swift.Error, Sendable, Equatable {
     /// The list is empty and the operation requires elements.
     case empty
@@ -55,7 +55,7 @@ public enum __ListLinkedBoundedError: Swift.Error, Sendable, Equatable {
 // implicit Copyable constraint. This is a documented Swift compiler limitation.
 // See [MEM-COPY-004].
 
-extension List.Linked where Element: ~Copyable, S: ~Copyable {
+extension __ListLinked where Element: ~Copyable, S: ~Copyable {
     /// Errors that can occur during linked list operations.
     ///
     /// ## Cases
@@ -65,7 +65,7 @@ extension List.Linked where Element: ~Copyable, S: ~Copyable {
     public typealias Error = __ListLinkedError
 }
 
-extension List.Linked.Bounded where Element: ~Copyable, S: ~Copyable {
+extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable {
     /// Errors that can occur during bounded linked list operations.
     ///
     /// ## Cases

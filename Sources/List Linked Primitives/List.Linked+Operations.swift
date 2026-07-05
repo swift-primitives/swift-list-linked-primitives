@@ -12,11 +12,10 @@
 public import Buffer_Linked_Primitive
 public import Index_Primitives
 public import List_Linked_Primitive
-public import List_Primitives
 
 // MARK: - Properties (seam-generic over the column)
 
-extension List.Linked where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+extension __ListLinked where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// The current number of elements in the list.
     @inlinable
     public var count: Index_Primitives.Index<Element>.Count { Index_Primitives.Index<Element>.Count(UInt(_buffer.count)) }
@@ -32,7 +31,7 @@ extension List.Linked where Element: ~Copyable, S: ~Copyable, S: Store.Generatio
 
 // MARK: - Growing inserts (per column — auto-grow)
 
-extension List.Linked where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+extension __ListLinked where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// Adds an element to the front (move-only column; grows as needed).
     @inlinable
     public mutating func prepend(_ element: consuming Element)
@@ -65,7 +64,7 @@ extension List.Linked where Element: ~Copyable, S: ~Copyable, S: Store.Generatio
     }
 }
 
-extension List.Linked where Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+extension __ListLinked where Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// Adds an element to the front (CoW column; grows as needed, copy-on-write correct).
     @inlinable
     public mutating func prepend(_ element: Element)
@@ -100,7 +99,7 @@ extension List.Linked where Element: Copyable, S: ~Copyable, S: Store.Generation
 
 // MARK: - Removal (seam-generic)
 
-extension List.Linked where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+extension __ListLinked where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// Removes and returns the first element, or `nil` if empty.
     @inlinable
     @discardableResult
@@ -137,7 +136,7 @@ extension List.Linked where Element: ~Copyable, S: ~Copyable, S: Store.Generatio
 // but has no slot for the column). Closure forms support `~Copyable` elements; `first`/`last`
 // properties (Copyable) are below.
 
-extension List.Linked where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+extension __ListLinked where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// Borrowing access to the front element without removing it; `nil` if empty.
     @inlinable
     public func peekFront<R>(_ body: (borrowing Element) -> R) -> R? { _buffer.peekFront(body) }
@@ -160,7 +159,7 @@ extension List.Linked where Element: ~Copyable, S: ~Copyable, S: Store.Generatio
 
 // MARK: - Convenience accessors + drain (Copyable)
 
-extension List.Linked where Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+extension __ListLinked where Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// The first element, or `nil` if empty.
     @inlinable
     public var first: Element? { _buffer.first() }
