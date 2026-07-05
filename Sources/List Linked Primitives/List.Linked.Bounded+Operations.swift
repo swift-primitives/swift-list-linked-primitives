@@ -64,20 +64,6 @@ extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.
     @discardableResult
     public mutating func popLast() -> Element? { _buffer.removeBack() }
 
-    /// Removes and returns the first element; throws `.empty` if empty.
-    @inlinable
-    public mutating func removeFirst() throws(__ListLinkedBoundedError) -> Element {
-        guard let element = popFirst() else { throw .empty }
-        return element
-    }
-
-    /// Removes and returns the last element; throws `.empty` if empty.
-    @inlinable
-    public mutating func removeLast() throws(__ListLinkedBoundedError) -> Element {
-        guard let element = popLast() else { throw .empty }
-        return element
-    }
-
     /// Removes all elements (the node store is retained).
     @inlinable
     public mutating func clear() { _buffer.removeAll() }

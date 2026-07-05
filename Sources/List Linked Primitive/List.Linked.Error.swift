@@ -27,9 +27,6 @@
 /// - Note: Use ``List/Linked/Error`` in your code, not this type directly.
 @_documentation(visibility: public)
 public enum __ListLinkedError: Swift.Error, Sendable, Equatable {
-    /// The list is empty and the operation requires elements.
-    case empty
-
     /// The requested capacity is invalid (negative).
     case invalidCapacity
 }
@@ -39,9 +36,6 @@ public enum __ListLinkedError: Swift.Error, Sendable, Equatable {
 /// - Note: Use ``List/Linked/Bounded/Error`` in your code, not this type directly.
 @_documentation(visibility: public)
 public enum __ListLinkedBoundedError: Swift.Error, Sendable, Equatable {
-    /// The list is empty and the operation requires elements.
-    case empty
-
     /// The requested capacity is invalid (negative).
     case invalidCapacity
 
@@ -60,7 +54,6 @@ extension __ListLinked where Element: ~Copyable, S: ~Copyable {
     ///
     /// ## Cases
     ///
-    /// - ``Error/empty``: The list is empty and the operation requires elements.
     /// - ``Error/invalidCapacity``: The requested capacity is invalid (negative).
     public typealias Error = __ListLinkedError
 }
@@ -70,7 +63,6 @@ extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable {
     ///
     /// ## Cases
     ///
-    /// - ``Error/empty``: The list is empty and the operation requires elements.
     /// - ``Error/invalidCapacity``: The requested capacity is invalid (negative).
     /// - ``Error/overflow``: The list is full and cannot accept more elements.
     public typealias Error = __ListLinkedBoundedError
