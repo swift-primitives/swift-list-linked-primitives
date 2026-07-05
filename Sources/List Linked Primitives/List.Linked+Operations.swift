@@ -69,7 +69,7 @@ extension List.Linked where Element: Copyable, S: ~Copyable, S: Store.Generation
     /// Adds an element to the front (CoW column; grows as needed, copy-on-write correct).
     @inlinable
     public mutating func prepend(_ element: Element)
-    where S == Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>> {
+    where S == Ownership.Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>> {
         if _buffer.isFull { _buffer.ensureCapacity(_buffer.count + 1) }
         do throws(Buffer<S>.Linked<N>.Error) {
             try _buffer.insertFront(element)
@@ -81,7 +81,7 @@ extension List.Linked where Element: Copyable, S: ~Copyable, S: Store.Generation
     /// Adds an element to the back (CoW column; grows as needed, copy-on-write correct).
     @inlinable
     public mutating func append(_ element: Element)
-    where S == Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>> {
+    where S == Ownership.Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>> {
         if _buffer.isFull { _buffer.ensureCapacity(_buffer.count + 1) }
         do throws(Buffer<S>.Linked<N>.Error) {
             try _buffer.insertBack(element)
@@ -93,7 +93,7 @@ extension List.Linked where Element: Copyable, S: ~Copyable, S: Store.Generation
     /// Reserves capacity for at least `minimumCapacity` elements (CoW column).
     @inlinable
     public mutating func reserve(_ minimumCapacity: Int)
-    where S == Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>> {
+    where S == Ownership.Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>> {
         _buffer.ensureCapacity(minimumCapacity)
     }
 }

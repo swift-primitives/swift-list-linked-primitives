@@ -17,8 +17,8 @@ public import List_Primitives
 //
 // The ratified two-column design (mirrors `Array<S>`, `PROPOSAL-tower-perfected-design.md` §1.3):
 // `List.Linked` is a thin semantic discipline over a `Buffer<S>.Linked<N>`, generic over the
-// storage column `S`, and **copyability flows from the column** — `Buffer<Shared<…>>.Linked` is
-// `Copyable` when the element is, so `List<E>.Linked<Shared<…>, N>` is the value-semantic (CoW)
+// storage column `S`, and **copyability flows from the column** — `Buffer<Ownership.Shared<…>>.Linked` is
+// `Copyable` when the element is, so `List<E>.Linked<Ownership.Shared<…>, N>` is the value-semantic (CoW)
 // column and `List<E>.Linked<Storage<…>.Generational<…>, N>` stays the zero-cost move-only column.
 //
 // The user element is the node's payload (`S.Element == Node<Element, N>`), pinned here at the
@@ -122,14 +122,14 @@ extension List where Element: Copyable {
         /// Doubly-linked, value-semantic (the `Shared` CoW column).
         public typealias Doubly =
             List<Element>.Linked<
-                Shared<Node<Element, 2>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 2>>>,
+                Ownership.Shared<Node<Element, 2>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 2>>>,
                 2
             >
 
         /// Singly-linked, value-semantic (the `Shared` CoW column).
         public typealias Singly =
             List<Element>.Linked<
-                Shared<Node<Element, 1>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 1>>>,
+                Ownership.Shared<Node<Element, 1>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 1>>>,
                 1
             >
     }

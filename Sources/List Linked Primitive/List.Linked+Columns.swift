@@ -44,7 +44,7 @@ extension List.Linked where S: ~Copyable, Element: ~Copyable {
     @inlinable
     public init()
     where
-        S == Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>>,
+        S == Ownership.Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>>,
         Element: Copyable
     {
         self.init(_buffer: Buffer<S>.Linked<N>(minimumCapacity: Index_Primitives.Index<Element>.Count(UInt(4))))
@@ -54,7 +54,7 @@ extension List.Linked where S: ~Copyable, Element: ~Copyable {
     @inlinable
     public init(reservingCapacity capacity: Int)
     where
-        S == Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>>,
+        S == Ownership.Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>>,
         Element: Copyable
     {
         precondition(capacity > 0, "capacity must be positive")
@@ -77,7 +77,7 @@ extension List.Linked.Bounded where S: ~Copyable, Element: ~Copyable {
     @inlinable
     public init(capacity: Index_Primitives.Index<Element>.Count) throws(__ListLinkedBoundedError)
     where
-        S == Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>>,
+        S == Ownership.Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>>,
         Element: Copyable
     {
         guard capacity > .zero else { throw .invalidCapacity }
