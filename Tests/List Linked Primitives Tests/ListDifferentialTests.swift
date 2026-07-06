@@ -50,17 +50,21 @@ struct ListLinkedDifferentialTests {
             case 0, 1:  // insert bias (3/6 insert vs 2/6 remove) -> growth across reallocations
                 list.append(value)
                 oracle.append(value)
+
             case 2:
                 list.prepend(value)
                 oracle.insert(value, at: 0)
+
             case 3:
                 let got = list.popFirst()
                 let want = oracle.isEmpty ? nil : oracle.removeFirst()
                 #expect(got == want, "step \(step): popFirst diverged")
+
             case 4:
                 let got = list.popLast()
                 let want = oracle.isEmpty ? nil : oracle.removeLast()
                 #expect(got == want, "step \(step): popLast diverged")
+
             default:
                 let front = list.peekFront { copy $0 }
                 #expect(front == oracle.first, "step \(step): peekFront diverged")
