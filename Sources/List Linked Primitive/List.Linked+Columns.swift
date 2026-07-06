@@ -66,7 +66,7 @@ extension __ListLinked where S: ~Copyable, Element: ~Copyable {
 extension __ListLinked.Bounded where S: ~Copyable, Element: ~Copyable {
     /// Creates a fixed-capacity linked list (move-only column).
     @inlinable
-    public init(capacity: Index_Primitives.Index<Element>.Count) throws(__ListLinkedBoundedError)
+    public init(capacity: Index_Primitives.Index<Element>.Count) throws(__ListLinkedError)
     where S == Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>> {
         guard capacity > .zero else { throw .invalidCapacity }
         self.init(_buffer: Buffer<S>.Linked<N>(minimumCapacity: capacity), capacity: capacity)
@@ -74,7 +74,7 @@ extension __ListLinked.Bounded where S: ~Copyable, Element: ~Copyable {
 
     /// Creates a fixed-capacity value-semantic linked list (CoW column).
     @inlinable
-    public init(capacity: Index_Primitives.Index<Element>.Count) throws(__ListLinkedBoundedError)
+    public init(capacity: Index_Primitives.Index<Element>.Count) throws(__ListLinkedError)
     where
         S == Ownership.Shared<Node<Element, N>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, N>>>,
         Element: Copyable

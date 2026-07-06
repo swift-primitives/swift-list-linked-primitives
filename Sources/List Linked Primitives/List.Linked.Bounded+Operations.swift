@@ -34,7 +34,7 @@ extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.
 extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
     /// Adds an element to the front; throws `.overflow` if at capacity.
     @inlinable
-    public mutating func prepend(_ element: consuming Element) throws(__ListLinkedBoundedError) {
+    public mutating func prepend(_ element: consuming Element) throws(__ListLinkedError) {
         guard !isFull else { throw .overflow }
         do throws(Buffer<S>.Linked<N>.Error) {
             try _buffer.insertFront(element)
@@ -45,7 +45,7 @@ extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.
 
     /// Adds an element to the back; throws `.overflow` if at capacity.
     @inlinable
-    public mutating func append(_ element: consuming Element) throws(__ListLinkedBoundedError) {
+    public mutating func append(_ element: consuming Element) throws(__ListLinkedError) {
         guard !isFull else { throw .overflow }
         do throws(Buffer<S>.Linked<N>.Error) {
             try _buffer.insertBack(element)

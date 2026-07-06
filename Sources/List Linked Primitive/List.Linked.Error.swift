@@ -22,24 +22,21 @@
 // - List<Element>.Linked<N>.Error
 // - List<Element>.Linked<N>.Bounded.Error
 
-/// Hoisted implementation of ``List/Linked/Error``.
+/// Hoisted implementation of ``List/Linked/Error`` — the ONE-carrier error for the family.
 ///
-/// - Note: Use ``List/Linked/Error`` in your code, not this type directly.
+/// W3.3 consolidation (§5.3): the former `__ListLinkedBoundedError` folded into this single
+/// carrier error, matching the landed ring-`Queue` house shape (one carrier `Error` holding the
+/// bounded-overflow case). Both `List.Linked.Error` and `List.Linked.Bounded.Error` now alias
+/// this type; the bounded ops keep `throws`, now throwing this carrier error.
+///
+/// - Note: Use ``List/Linked/Error`` / ``List/Linked/Bounded/Error`` in your code, not this type
+///   directly.
 @_documentation(visibility: public)
 public enum __ListLinkedError: Swift.Error, Sendable, Equatable {
-    /// The requested capacity is invalid (negative).
-    case invalidCapacity
-}
-
-/// Hoisted implementation of ``List/Linked/Bounded/Error``.
-///
-/// - Note: Use ``List/Linked/Bounded/Error`` in your code, not this type directly.
-@_documentation(visibility: public)
-public enum __ListLinkedBoundedError: Swift.Error, Sendable, Equatable {
-    /// The requested capacity is invalid (negative).
+    /// The requested capacity is invalid (non-positive).
     case invalidCapacity
 
-    /// The list is full and cannot accept more elements.
+    /// The (bounded) list is full and cannot accept more elements.
     case overflow
 }
 
@@ -61,9 +58,12 @@ extension __ListLinked where Element: ~Copyable, S: ~Copyable {
 extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable {
     /// Errors that can occur during bounded linked list operations.
     ///
+    /// The per-instantiation `List.Linked.Bounded.Error` spelling is preserved; it aliases the
+    /// same one-carrier `__ListLinkedError` (W3.3 consolidation, §5.3).
+    ///
     /// ## Cases
     ///
-    /// - ``Error/invalidCapacity``: The requested capacity is invalid (negative).
+    /// - ``Error/invalidCapacity``: The requested capacity is invalid (non-positive).
     /// - ``Error/overflow``: The list is full and cannot accept more elements.
-    public typealias Error = __ListLinkedBoundedError
+    public typealias Error = __ListLinkedError
 }
