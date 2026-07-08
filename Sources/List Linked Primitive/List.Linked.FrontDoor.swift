@@ -42,21 +42,23 @@ extension List where Element: ~Copyable {
 
 extension List where Element: Copyable {
     /// Value-semantic (CoW) linked-list columns.
-    public enum Value {
-        /// Doubly-linked, value-semantic (the `Shared` CoW column).
-        public typealias Doubly =
-            __ListLinked<
-                Element,
-                Ownership.Shared<Node<Element, 2>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 2>>>,
-                2
-            >
+    public enum Value {}
+}
 
-        /// Singly-linked, value-semantic (the `Shared` CoW column).
-        public typealias Singly =
-            __ListLinked<
-                Element,
-                Ownership.Shared<Node<Element, 1>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 1>>>,
-                1
-            >
-    }
+extension List.Value where Element: Copyable {
+    /// Doubly-linked, value-semantic (the `Shared` CoW column).
+    public typealias Doubly =
+        __ListLinked<
+            Element,
+            Ownership.Shared<Node<Element, 2>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 2>>>,
+            2
+        >
+
+    /// Singly-linked, value-semantic (the `Shared` CoW column).
+    public typealias Singly =
+        __ListLinked<
+            Element,
+            Ownership.Shared<Node<Element, 1>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 1>>>,
+            1
+        >
 }
