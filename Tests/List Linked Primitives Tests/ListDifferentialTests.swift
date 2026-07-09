@@ -33,8 +33,8 @@ extension SplitMix64 {
 
 // MARK: - Differential vs a plain-array oracle (the W2 test floor, §9.3 convention rider)
 
-@Suite("List.Linked — differential vs array oracle")
-struct ListLinkedDifferentialTests {
+@Suite
+struct `List.Linked Differential Tests` {
 
     /// ≥500 mixed ops against a plain-`[Int]` oracle over the move-only default column
     /// (`List<Int>.Doubly`): duplicates (values drawn from 0..<10), interleaved

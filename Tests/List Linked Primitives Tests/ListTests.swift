@@ -16,8 +16,8 @@ import Testing
 
 // MARK: - CoW (value-semantic) column
 
-@Suite("List.Linked — value-semantic column")
-struct ListLinkedValueTests {
+@Suite
+struct `List.Linked Value Tests` {
 
     @Test
     func `empty, append, prepend, first, last`() {
@@ -102,8 +102,8 @@ struct ListLinkedValueTests {
 
 // MARK: - Move-only column
 
-@Suite("List.Linked — move-only column")
-struct ListLinkedMoveOnlyTests {
+@Suite
+struct `List.Linked MoveOnly Tests` {
 
     private struct Token: ~Copyable {
         let id: Int
@@ -141,8 +141,8 @@ struct ListLinkedMoveOnlyTests {
 
 // MARK: - Bounded
 
-@Suite("List.Linked.Bounded")
-struct ListLinkedBoundedTests {
+@Suite
+struct `List.Linked Bounded Tests` {
 
     @Test
     func `bounded overflows at capacity`() throws {
