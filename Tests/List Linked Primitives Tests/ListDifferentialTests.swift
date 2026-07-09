@@ -19,6 +19,9 @@ import Testing
 private struct SplitMix64 {
     var state: UInt64
     init(seed: UInt64) { self.state = seed }
+}
+
+extension SplitMix64 {
     mutating func next() -> UInt64 {
         state &+= 0x9E37_79B9_7F4A_7C15
         var z = state

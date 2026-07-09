@@ -151,7 +151,7 @@ struct ListLinkedBoundedTests {
         try list.append(2)
         #expect(list.isFull)
         var didOverflow = false
-        do { try list.append(3) } catch { didOverflow = (error == .overflow) }
+        do throws(__ListLinkedError) { try list.append(3) } catch { didOverflow = (error == .overflow) }
         #expect(didOverflow)
         #expect(list.count == 2)
         #expect(list.popFirst() == 1)
