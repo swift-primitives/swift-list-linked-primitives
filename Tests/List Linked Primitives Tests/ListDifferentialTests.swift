@@ -35,6 +35,9 @@ extension SplitMix64 {
 
 @Suite
 struct `List.Linked Differential Tests` {
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
 
     /// ≥500 mixed ops against a plain-`[Int]` oracle over the move-only default column
     /// (`List<Int>.Doubly`): duplicates (values drawn from 0..<10), interleaved
@@ -46,7 +49,7 @@ struct `List.Linked Differential Tests` {
         var list = List<Int>.Doubly()
         var oracle: [Int] = []
 
-        for step in 0..<600 {
+        (0..<600).forEach { step in
             let op = rng.next() % 6
             let value = Int(rng.next() % 10)  // small range -> duplicates guaranteed
             switch op {

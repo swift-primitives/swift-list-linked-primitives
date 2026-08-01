@@ -18,6 +18,9 @@ import Testing
 
 @Suite
 struct `List.Linked Value Tests` {
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
 
     @Test
     func `empty, append, prepend, first, last`() {
@@ -46,7 +49,7 @@ struct `List.Linked Value Tests` {
     @Test
     func `grows past the initial capacity`() {
         var list = List<Int>.Value.Singly()
-        for value in 0..<100 { list.append(value) }
+        (0..<100).forEach { value in list.append(value) }
         #expect(list.count == 100)
         #expect(Array(list) == Array(0..<100))
     }
@@ -104,6 +107,9 @@ struct `List.Linked Value Tests` {
 
 @Suite
 struct `List.Linked MoveOnly Tests` {
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
 
     private struct Token: ~Copyable {
         let id: Int
@@ -143,6 +149,9 @@ struct `List.Linked MoveOnly Tests` {
 
 @Suite
 struct `List.Linked Bounded Tests` {
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
 
     @Test
     func `bounded overflows at capacity`() throws {
