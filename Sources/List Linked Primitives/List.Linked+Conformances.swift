@@ -23,7 +23,9 @@ public import List_Linked_Primitive
 // `List.Linked.swift` for why (cross-package type-metadata miscompile).
 
 extension __ListLinked: Equatable
-where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+where
+    S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N>
+{
     /// Two lists are equal when their live elements match front to back.
     @inlinable
     public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -37,7 +39,9 @@ where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Eleme
 }
 
 extension __ListLinked: Hashable
-where S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+where
+    S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N>
+{
     /// Hashes the live elements, front to back.
     @inlinable
     public func hash(into hasher: inout Hasher) {
@@ -48,7 +52,9 @@ where S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Elemen
 }
 
 extension __ListLinked.Bounded: Equatable
-where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+where
+    S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N>
+{
     /// Two bounded lists are equal when their live elements match front to back.
     @inlinable
     public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -62,7 +68,9 @@ where S: Copyable, Element: Equatable, S: Store.Generational.`Protocol`, S.Eleme
 }
 
 extension __ListLinked.Bounded: Hashable
-where S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+where
+    S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N>
+{
     /// Hashes the live elements, front to back.
     @inlinable
     public func hash(into hasher: inout Hasher) {
@@ -75,21 +83,29 @@ where S: Copyable, Element: Hashable, S: Store.Generational.`Protocol`, S.Elemen
 // MARK: - Iteration (stdlib Sequence over a snapshot; the CoW column)
 
 extension __ListLinked
-where Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+where
+    Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N>
+{
     /// A forward iterator over a snapshot of the elements, head to tail.
     @inlinable
     public func makeIterator() -> [Element].Iterator { _buffer.makeIterator() }
 }
 
 extension __ListLinked.Bounded
-where Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+where
+    Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N>
+{
     /// A forward iterator over a snapshot of the elements, head to tail.
     @inlinable
     public func makeIterator() -> [Element].Iterator { _buffer.makeIterator() }
 }
 
 extension __ListLinked: Swift.Sequence
-where S: Copyable, Element: Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {}
+where
+    S: Copyable, Element: Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N>
+{}
 
 extension __ListLinked.Bounded: Swift.Sequence
-where S: Copyable, Element: Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {}
+where
+    S: Copyable, Element: Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N>
+{}
