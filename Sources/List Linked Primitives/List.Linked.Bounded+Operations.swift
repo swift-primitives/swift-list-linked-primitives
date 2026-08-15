@@ -15,10 +15,16 @@ public import List_Linked_Primitive
 
 // MARK: - Properties (seam-generic over the column)
 
-extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+extension __ListLinked.Bounded
+where
+    Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`,
+    S.Element == Node<Element, N>
+{
     /// The current number of elements in the list.
     @inlinable
-    public var count: Index_Primitives.Index<Element>.Count { Index_Primitives.Index<Element>.Count(UInt(_buffer.count)) }
+    public var count: Index_Primitives.Index<Element>.Count {
+        Index_Primitives.Index<Element>.Count(UInt(_buffer.count))
+    }
 
     /// Whether the list is empty.
     @inlinable
@@ -31,7 +37,11 @@ extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.
 
 // MARK: - Core operations (seam-generic; inserts throw on overflow — no auto-grow)
 
-extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+extension __ListLinked.Bounded
+where
+    Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`,
+    S.Element == Node<Element, N>
+{
     /// Adds an element to the front; throws `.overflow` if at capacity.
     @inlinable
     public mutating func prepend(_ element: consuming Element) throws(__ListLinked.Bounded.Error) {
@@ -39,7 +49,9 @@ extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.
         do throws(Buffer<S>.Linked<N>.Error) {
             try _buffer.insertFront(element)
         } catch {
-            fatalError("List.Linked.Bounded.prepend: insertion failed despite capacity check: \(error)")
+            fatalError(
+                "List.Linked.Bounded.prepend: insertion failed despite capacity check: \(error)"
+            )
         }
     }
 
@@ -50,7 +62,9 @@ extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.
         do throws(Buffer<S>.Linked<N>.Error) {
             try _buffer.insertBack(element)
         } catch {
-            fatalError("List.Linked.Bounded.append: insertion failed despite capacity check: \(error)")
+            fatalError(
+                "List.Linked.Bounded.append: insertion failed despite capacity check: \(error)"
+            )
         }
     }
 
@@ -71,7 +85,11 @@ extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.
 
 // MARK: - Peek / Traversal (seam-generic; mirrors the buffer's borrowing surface)
 
-extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+extension __ListLinked.Bounded
+where
+    Element: ~Copyable, S: ~Copyable, S: Store.Generational.`Protocol`,
+    S.Element == Node<Element, N>
+{
     /// Borrowing access to the front element without removing it; `nil` if empty.
     @inlinable
     public func peekFront<R>(_ body: (borrowing Element) -> R) -> R? { _buffer.peekFront(body) }
@@ -94,7 +112,10 @@ extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable, S: Store.
 
 // MARK: - Convenience accessors (Copyable)
 
-extension __ListLinked.Bounded where Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N> {
+extension __ListLinked.Bounded
+where
+    Element: Copyable, S: ~Copyable, S: Store.Generational.`Protocol`, S.Element == Node<Element, N>
+{
     /// The first element, or `nil` if empty.
     @inlinable
     public var first: Element? { _buffer.first() }

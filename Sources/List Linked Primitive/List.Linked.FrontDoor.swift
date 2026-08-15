@@ -31,11 +31,15 @@ extension List where Element: ~Copyable {
 
     /// Doubly-linked, move-only (zero-cost default column).
     public typealias Doubly =
-        __ListLinked<Element, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 2>>, 2>
+        __ListLinked<
+            Element, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 2>>, 2
+        >
 
     /// Singly-linked, move-only (zero-cost default column).
     public typealias Singly =
-        __ListLinked<Element, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 1>>, 1>
+        __ListLinked<
+            Element, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 1>>, 1
+        >
 }
 
 // MARK: - List<E>.Value — the value-semantic (CoW) column front doors
@@ -50,7 +54,10 @@ extension List.Value where Element: Copyable {
     public typealias Doubly =
         __ListLinked<
             Element,
-            Ownership.Shared<Node<Element, 2>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 2>>>,
+            Ownership.Shared<
+                Node<Element, 2>,
+                Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 2>>
+            >,
             2
         >
 
@@ -58,7 +65,10 @@ extension List.Value where Element: Copyable {
     public typealias Singly =
         __ListLinked<
             Element,
-            Ownership.Shared<Node<Element, 1>, Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 1>>>,
+            Ownership.Shared<
+                Node<Element, 1>,
+                Storage<Memory.Allocator<Memory.Heap>.Pool>.Generational<Node<Element, 1>>
+            >,
             1
         >
 }
