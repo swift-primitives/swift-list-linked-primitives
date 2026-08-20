@@ -10,7 +10,7 @@
 // ===----------------------------------------------------------------------===//
 
 public import Buffer_Linked_Primitive
-public import Index_Primitives
+import Index_Primitives
 
 // MARK: - __ListLinked (the hoisted ADT carrier — generic over the storage COLUMN)
 //
