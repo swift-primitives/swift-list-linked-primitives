@@ -1,20 +1,7 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-primitives open source project
-//
-// Copyright (c) 2024-2026 Coen ten Thije Boonkkamp and the swift-primitives project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
 import List_Linked_Primitives_Test_Support
 import Testing
 
 @testable import List_Linked_Primitives
-
-// MARK: - CoW (value-semantic) column
 
 @Suite
 struct `List.Linked Value Tests` {
@@ -28,7 +15,7 @@ struct `List.Linked Value Tests` {
         #expect(list.isEmpty)
         list.append(2)
         list.prepend(1)
-        list.append(3)  // 1, 2, 3
+        list.append(3)
         #expect(list.count == 3)
         #expect(list.first == 1)
         #expect(list.last == 3)
@@ -103,8 +90,6 @@ struct `List.Linked Value Tests` {
     }
 }
 
-// MARK: - Move-only column
-
 @Suite
 struct `List.Linked MoveOnly Tests` {
     @Suite struct Unit {}
@@ -145,8 +130,6 @@ struct `List.Linked MoveOnly Tests` {
     }
 }
 
-// MARK: - Bounded
-
 @Suite
 struct `List.Linked Bounded Tests` {
     @Suite struct Unit {}
@@ -166,7 +149,7 @@ struct `List.Linked Bounded Tests` {
         #expect(didOverflow)
         #expect(list.count == 2)
         #expect(list.popFirst() == 1)
-        try list.append(9)  // room recycled
+        try list.append(9)
         #expect(list.popFirst() == 2)
         #expect(list.popFirst() == 9)
     }

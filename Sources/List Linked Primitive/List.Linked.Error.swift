@@ -1,69 +1,17 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-primitives open source project
-//
-// Copyright (c) 2024-2026 Coen ten Thije Boonkkamp and the swift-primitives project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
-// MARK: - Hoisted Error Types (Module Level)
-//
-// Swift does not allow nested types inside generic types to be easily accessed.
-// These error types are hoisted to module level and exposed via typealiases to
-// provide the expected Nest.Name API (List.Linked.Error, etc.).
-//
-// This is a documented exception per [API-EXC-001] due to Swift language
-// limitations with generic nested types.
-//
-// Use the typealias forms in your code:
-// - List<Element>.Linked<N>.Error
-// - List<Element>.Linked<N>.Bounded.Error
-
-/// Hoisted implementation of ``List/Linked/Error`` — the ONE-carrier error for the family.
-///
-/// W3.3 consolidation (§5.3): the former `__ListLinkedBoundedError` folded into this single
-/// carrier error, matching the landed ring-`Queue` house shape (one carrier `Error` holding the
-/// bounded-overflow case). Both `List.Linked.Error` and `List.Linked.Bounded.Error` now alias
-/// this type; the bounded ops keep `throws`, now throwing this carrier error.
-///
-/// - Note: Use ``List/Linked/Error`` / ``List/Linked/Bounded/Error`` in your code, not this type
-///   directly.
 @_documentation(visibility: public)
 public enum __ListLinkedError: Swift.Error, Sendable, Equatable {
-    /// The requested capacity is invalid (non-positive).
+
     case invalidCapacity
 
-    /// The (bounded) list is full and cannot accept more elements.
     case overflow
 }
 
-// MARK: - Typealiases (Nest.Name API)
-//
-// IMPORTANT: Extensions MUST include `where Element: ~Copyable` to prevent
-// implicit Copyable constraint. This is a documented Swift compiler limitation.
-// See [MEM-COPY-004].
-
 extension __ListLinked where Element: ~Copyable, S: ~Copyable {
-    /// Errors that can occur during linked list operations.
-    ///
-    /// ## Cases
-    ///
-    /// - ``Error/invalidCapacity``: The requested capacity is invalid (negative).
+
     public typealias Error = __ListLinkedError
 }
 
 extension __ListLinked.Bounded where Element: ~Copyable, S: ~Copyable {
-    /// Errors that can occur during bounded linked list operations.
-    ///
-    /// The per-instantiation `List.Linked.Bounded.Error` spelling is preserved; it aliases the
-    /// same one-carrier `__ListLinkedError` (W3.3 consolidation, §5.3).
-    ///
-    /// ## Cases
-    ///
-    /// - ``Error/invalidCapacity``: The requested capacity is invalid (non-positive).
-    /// - ``Error/overflow``: The list is full and cannot accept more elements.
+
     public typealias Error = __ListLinkedError
 }

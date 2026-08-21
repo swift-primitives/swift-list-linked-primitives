@@ -54,7 +54,7 @@ let package = Package(
             url: "https://github.com/swift-primitives/swift-sequence-primitives.git",
             branch: "main"
         ),
-        // E2 (storage-small-substrate.md): verbose Storage.Contiguous<Memory.Heap> needs direct deps (MemberImportVisibility).
+
         .package(
             url: "https://github.com/swift-primitives/swift-storage-primitives.git",
             branch: "main"
@@ -66,7 +66,6 @@ let package = Package(
     ],
     targets: [
 
-        // MARK: - Type (linked-list type surface: Linked + Bounded + errors + iteration witnesses)
         .target(
             name: "List Linked Primitive",
             dependencies: [
@@ -92,7 +91,6 @@ let package = Package(
             ]
         ),
 
-        // MARK: - Linked (operations / conformances over the linked-list types; doubles as umbrella)
         .target(
             name: "List Linked Primitives",
             dependencies: [
@@ -116,7 +114,6 @@ let package = Package(
             ]
         ),
 
-        // MARK: - Test Support
         .target(
             name: "List Linked Primitives Test Support",
             dependencies: [
@@ -130,7 +127,6 @@ let package = Package(
             path: "Tests/Support"
         ),
 
-        // MARK: - Tests
         .testTarget(
             name: "List Linked Primitives Tests",
             dependencies: [
